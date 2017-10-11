@@ -298,6 +298,6 @@ def plot_rescaled_ISI_autocorrelation(rescaled_ISI_autocorrelation,
     ax.axhline(ci, linestyle='--', color='red')
     ax.axhline(-ci, linestyle='--', color='red')
     ax.set_xlabel('Lag')
-    ax.set_ylabel('autocorrelation')
+    ax.set_ylabel('Autocorrelation')
 
     return ax
