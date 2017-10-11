@@ -15,7 +15,7 @@ The `time_rescale` python package allows you to check how well a point process r
 
 ### Example Usage ###
 
-#### Fit a model
+#### Fit a model to a simulated inhomogeneous point process
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
@@ -23,18 +23,6 @@ from patsy import dmatrix
 from statsmodels.api import GLM, families
 
 def simulate_poisson_process(rate, sampling_frequency):
-    '''
-
-    Parameters
-    ----------
-    rate : ndarray
-    sampling_frequency : float
-
-    Returns
-    -------
-    poisson_point_process : ndarray
-        Same shape as rate.
-    '''
     return np.random.poisson(rate / sampling_frequency)
 
 n_time, n_trials = 1500, 1000
