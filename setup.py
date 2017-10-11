@@ -11,5 +11,6 @@ setup(
         author='Eric Denovellis',
         author_email='edeno@bu.edu',
         packages=find_packages(),
+        license='MIT',
         install_requires=['numpy', 'scipy', 'matplotlib'],
 )

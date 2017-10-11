@@ -7,6 +7,10 @@ The `time_rescale` python package allows you to check how well a point process r
 + handles spiking data with trial structure (label different trials with `trial_id`)
 + adjust for censoring of ISIs caused by short trials (`adjust_for_short_trials`).
 
+### Installation ###
+```python
+pip install time_rescale
+```
 
 ### Dependencies ###
 +  numpy
