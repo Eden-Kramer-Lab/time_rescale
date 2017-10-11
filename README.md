@@ -1,5 +1,12 @@
 # Time Rescaling
-Tools for evaluating the goodness of fit of a point process model.
+The `time_rescale` python package allows you to check how well a point process regression model fits neural spiking data by using the time rescaling theorem. The theorem states that point processes can be transformed according to its conditional intensity (instantaneous firing rate) into a unit rate poisson process. So if your model accurately captures the spiking data, you should be able to use the predicted conditional intensity from your model to rescale the spiking data into a unit rate poisson process.
+
+`time_rescale` provides convenient methods to rescale and compare your model to the theoretical unit rate poisson process. You can:
++ examine a Kolmogorov-Smirnov plot which compares the rescaled interspike intervals (ISIs) from your model to the theoretical unit rate poisson proces (`plot_ks`).
++ examine a plot of the autocorrelation of the normally transformed rescaled ISIs, which should be independent (`plot_rescaled_ISI_autocorrelation`).
++ handles spiking data with trial structure (label different trials with `trial_id`)
++ adjust for censoring of ISIs caused by short trials (`adjust_for_short_trials`).
+
 
 ### Dependencies ###
 +  numpy
