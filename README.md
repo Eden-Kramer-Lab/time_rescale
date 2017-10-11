@@ -13,12 +13,6 @@ The `time_rescale` python package allows you to check how well a point process r
 +  scipy
 +  matplotlib
 
-### References ###
-1. Brown, E.N., Barbieri, R., Ventura, V., Kass, R.E., and Frank, L.M. (2002). The time-rescaling theorem and its application to neural spike train data analysis. Neural Computation 14, 325-346.
-2. Wiener, M.C. (2003). An adjustment to the time-rescaling method for application to short-trial spike train data. Neural Computation 15, 2565-2576.
-3. Truccolo, W. (2004). A Point Process Framework for Relating Neural Spiking Activity to Spiking History, Neural Ensemble, and Extrinsic Covariate Effects. Journal of Neurophysiology 93, 1074-1089.
-
-
 ### Example Usage ###
 
 #### Fit a model
@@ -114,3 +108,9 @@ rescaled_adjusted.plot_rescaled_ISI_autocorrelation(ax=axes[1])
 ```
 
 ![Goodness of fit, not adjsuted for short trials](time_rescaling_ks_autocorrelation_adjusted.png)
+
+
+### References ###
+1. Brown, E.N., Barbieri, R., Ventura, V., Kass, R.E., and Frank, L.M. (2002). The time-rescaling theorem and its application to neural spike train data analysis. Neural Computation 14, 325-346.
+2. Wiener, M.C. (2003). An adjustment to the time-rescaling method for application to short-trial spike train data. Neural Computation 15, 2565-2576.
+3. Truccolo, W. (2004). A Point Process Framework for Relating Neural Spiking Activity to Spiking History, Neural Ensemble, and Extrinsic Covariate Effects. Journal of Neurophysiology 93, 1074-1089.
