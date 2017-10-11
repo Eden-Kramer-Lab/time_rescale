@@ -101,8 +101,49 @@ rescaled_adjusted.plot_ks(ax=axes[0])
 rescaled_adjusted.plot_rescaled_ISI_autocorrelation(ax=axes[1])
 ```
 
-![Goodness of fit, not adjsuted for short trials](time_rescaling_ks_autocorrelation_adjusted.png)
+![](time_rescaling_ks_autocorrelation_adjusted.png)
 
+#### Use a model that doesn't fit well
+```python
+constant_fit = GLM(spike_train.ravel(),
+                   np.ones_like(spike_train.ravel()),
+                   family=families.Poisson()).fit()
+
+fig, axes = plt.subplots(1,2, figsize=(12,6))
+
+axes[0].pcolormesh(np.unique(time), np.unique(trial_id),
+                   spike_train.T, cmap='viridis')
+axes[0].set_xlabel('Time')
+axes[0].set_ylabel('Trials')
+axes[0].set_title('Simulated Spikes')
+
+conditional_intensity = constant_fit.mu
+
+axes[1].plot(np.unique(time), firing_rate[:, 0],
+             linestyle='--', color='black',
+             linewidth=4, label='True Rate')
+axes[1].plot(time.ravel(), conditional_intensity * SAMPLING_FREQUENCY,
+             linewidth=4, label='Model Conditional Intensity')
+axes[1].set_xlabel('Time')
+axes[1].set_ylabel('Firing Rate (Hz)')
+axes[1].set_title('True Rate vs. Model')
+plt.legend()
+```
+
+![](constant_model_fit.png)
+
+```python
+bad_rescaled = TimeRescaling(constant_fit.mu,
+                             spike_train.ravel(),
+                             trial_id.ravel(),
+                             adjust_for_short_trials=True)
+fig, axes = plt.subplots(1, 2, figsize=(12, 6))
+bad_rescaled.plot_ks(ax=axes[0])
+axes[0].set_title('KS Plot')
+bad_rescaled.plot_rescaled_ISI_autocorrelation(ax=axes[1])
+axes[1].set_title('Autocorrelation');
+```
+![](time_rescaling_ks_autocorrelation_bad_fit.png)
 
 ### References ###
 1. Brown, E.N., Barbieri, R., Ventura, V., Kass, R.E., and Frank, L.M. (2002). The time-rescaling theorem and its application to neural spike train data analysis. Neural Computation 14, 325-346.
