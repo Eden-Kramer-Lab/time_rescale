@@ -12,7 +12,6 @@ References
 '''
 
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.stats import norm, expon
 from scipy.signal import correlate
@@ -67,16 +66,18 @@ class TimeRescaling(object):
         '''Rescales the interspike intervals (ISIs) to unit rate Poisson,
         adjusts for short time intervals, and transforms the ISIs to a
         uniform distribution for easier analysis.'''
-        data_by_trial = pd.DataFrame({
-            'conditional_intensity': self.conditional_intensity,
-            'is_spike': self.is_spike
-        }).groupby(self.trial_id)
 
-        return np.concatenate(
-            [uniform_rescaled_ISIs(
-                trial.conditional_intensity.values, trial.is_spike.values,
-                self.adjust_for_short_trials)
-             for _, trial in data_by_trial])
+        trial_IDs = np.unique(self.trial_id)
+        uniform_rescaled_ISIs_by_trial = []
+        for trial in trial_IDs:
+            is_trial = np.in1d(self.trial_id, trial)
+            uniform_rescaled_ISIs_by_trial.append(
+                uniform_rescaled_ISIs(
+                    self.conditional_intensity[is_trial],
+                    self.is_spike[is_trial], self.adjust_for_short_trials)
+            )
+
+        return np.concatenate(uniform_rescaled_ISIs_by_trial)
 
     def ks_statistic(self):
         '''Measures the maximum distance of the rescaled ISIs from the unit
