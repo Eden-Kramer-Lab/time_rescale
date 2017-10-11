@@ -60,7 +60,29 @@ trial_id = (np.arange(n_trials)[np.newaxis, :]
 design_matrix = dmatrix('bs(time, df=5)', dict(time=time.ravel()))
 fit = GLM(spike_train.ravel(), design_matrix,
           family=families.Poisson()).fit()
+
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 6))
+
+axes[0].pcolormesh(np.unique(time), np.unique(trial_id),
+                   spike_train.T, cmap='viridis')
+axes[0].set_xlabel('Time')
+axes[0].set_ylabel('Trials')
+axes[0].set_title('Simulated Spikes')
+conditional_intensity = fit.mu
+
+axes[1].plot(np.unique(time), firing_rate[:, 0],
+             linestyle='--', color='black',
+             linewidth=4, label='True Rate')
+axes[1].plot(time.ravel(), conditional_intensity * SAMPLING_FREQUENCY,
+             linewidth=4, label='model conditional intensity')
+axes[1].set_xlabel('Time')
+axes[1].set_ylabel('Firing Rate (Hz)')
+axes[1].set_title('True Rate vs. Model')
+plt.legend()
 ```
+
+![](simulated_spikes_model.png)
 
 #### Use time rescaling to analyze goodness of fit
 
