@@ -3,6 +3,8 @@
 
 from setuptools import setup, find_packages
 
+INSTALL_REQUIRES = ['numpy', 'scipy', 'matplotlib']
+
 setup(
         name='time_rescale',
         version='0.1.0',
@@ -13,5 +15,5 @@ setup(
         packages=find_packages(),
         url='https://github.com/Eden-Kramer-Lab/time_rescale',
         license='MIT',
-        install_requires=['numpy', 'scipy', 'matplotlib'],
+        install_requires=INSTALL_REQUIRES,
 )
