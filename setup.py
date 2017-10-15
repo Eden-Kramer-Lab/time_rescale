@@ -11,6 +11,7 @@ setup(
         author='Eric Denovellis',
         author_email='edeno@bu.edu',
         packages=find_packages(),
+        url='https://github.com/Eden-Kramer-Lab/time_rescale',
         license='MIT',
         install_requires=['numpy', 'scipy', 'matplotlib'],
 )
