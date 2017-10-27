@@ -15,6 +15,10 @@ See [Example Usage](#example-usage) for more details on how to use the package a
 ```python
 pip install time_rescale
 ```
+OR
+```python
+conda install -c edeno time_rescale
+```
 
 ### Dependencies ###
 +  numpy
