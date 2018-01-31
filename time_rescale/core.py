@@ -224,7 +224,7 @@ def _max_transformed_interval(integrated_conditional_intensity,
 
 
 def uniform_rescaled_ISIs(conditional_intensity, is_spike,
-                          adjust_for_short_trials=True):
+                          adjust_for_short_trials=False):
     '''Rescales the interspike intervals (ISIs) to unit rate Poisson,
     adjusts for short time intervals, and transforms the ISIs to a
     uniform distribution for easier analysis.
