@@ -1,0 +1,17 @@
+name: time_rescale
+channels:
+- conda-forge
+- defaults
+dependencies:
+- numpy
+- scipy
+- matplotlib
+- statsmodels
+- patsy
+- "pytest >= 2.7.1"
+- pytest-cov
+- coveralls
+- setuptools
+- jupyter
+- numpydoc
+- sphinx
