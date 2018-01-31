@@ -277,6 +277,8 @@ def plot_ks(uniform_rescaled_ISIs, ax=None):
         ax = plt.gca()
     ax.plot(uniform_cdf_values, uniform_cdf_values - ci,
             linestyle='--', color='red')
+    ax.plot(uniform_cdf_values, uniform_cdf_values,
+            linestyle='--', color='black')
     ax.plot(uniform_cdf_values, uniform_cdf_values + ci,
             linestyle='--', color='red')
     ax.scatter(uniform_rescaled_ISIs, uniform_cdf_values)
@@ -296,6 +298,7 @@ def plot_rescaled_ISI_autocorrelation(rescaled_ISI_autocorrelation,
     ci = 1.96 / np.sqrt(n_spikes)
     ax.scatter(lag, rescaled_ISI_autocorrelation)
     ax.axhline(ci, linestyle='--', color='red')
+    ax.axhline(0, linestyle='--', color='black')
     ax.axhline(-ci, linestyle='--', color='red')
     ax.set_xlabel('Lag')
     ax.set_ylabel('Autocorrelation')
