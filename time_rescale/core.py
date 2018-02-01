@@ -123,7 +123,7 @@ class TimeRescaling(object):
         '''
         return plot_ks(self.uniform_rescaled_ISIs(), ax=ax)
 
-    def plot_rescaled_ISI_autocorrelation(self, ax=None):
+    def plot_rescaled_ISI_autocorrelation(self, ax=None, sampling_frequency=1):
         '''Plot the rescaled ISI dependence.
 
         Should be independent if the transformation to unit rate Poisson
@@ -140,7 +140,8 @@ class TimeRescaling(object):
 
         '''
         return plot_rescaled_ISI_autocorrelation(
-            self.rescaled_ISI_autocorrelation(), ax=ax)
+            self.rescaled_ISI_autocorrelation(), ax=ax,
+            sampling_frequency=sampling_frequency)
 
 
 def _uniform_cdf_values(n_spikes):
@@ -290,9 +291,9 @@ def plot_ks(uniform_rescaled_ISIs, ax=None):
 
 
 def plot_rescaled_ISI_autocorrelation(rescaled_ISI_autocorrelation,
-                                      ax=None):
+                                      ax=None, sampling_frequency=1):
     n_spikes = rescaled_ISI_autocorrelation.size // 2 + 1
-    lag = np.arange(-n_spikes + 1, n_spikes)
+    lag = np.arange(-n_spikes + 1, n_spikes) / sampling_frequency
     if ax is None:
         ax = plt.gca()
     ci = 1.96 / np.sqrt(n_spikes)
