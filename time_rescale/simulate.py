@@ -9,7 +9,7 @@ def simulate_time(n_samples, sampling_frequency):
 
 def simulate_linear_distance(time, track_height, running_speed=10):
     half_height = (track_height / 2)
-    return (half_height * np.sin(2 * np.pi * time / running_speed - np.pi / 2)
+    return (half_height * np.cos(2 * np.pi * time / running_speed)
             + half_height)
 
 
