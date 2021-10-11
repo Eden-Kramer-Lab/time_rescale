@@ -13,6 +13,7 @@ References
 
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy import integrate
 from scipy.signal import correlate
 from scipy.stats import expon, norm
 
@@ -109,7 +110,7 @@ class TimeRescaling():
         c = correlate(normal_rescaled_ISIs, normal_rescaled_ISIs)
         return c / c.max()
 
-    def plot_ks(self, ax=None):
+    def plot_ks(self, ax=None, scatter_kwargs=None, ci_color='red'):
         '''Plots the rescaled ISIs versus a uniform distribution to
         examine how close the rescaled ISIs are to the unit rate Poisson.
 
@@ -117,15 +118,23 @@ class TimeRescaling():
         ----------
         ax : matplotlib axis handle, optional
             If None, plots on the current axis handle.
+        scatter_kwargs : None or dict
+            Plotting arguments for scatter plot
+        ci_color : str
+            Confidence interval color
 
         Returns
         -------
         ax : axis_handle
 
         '''
-        return plot_ks(self.uniform_rescaled_ISIs(), ax=ax)
+        return plot_ks(self.uniform_rescaled_ISIs(),
+                       ax=ax,
+                       scatter_kwargs=scatter_kwargs,
+                       ci_color=ci_color)
 
-    def plot_rescaled_ISI_autocorrelation(self, ax=None):
+    def plot_rescaled_ISI_autocorrelation(self, ax=None, scatter_kwargs=None,
+                                          ci_color='red'):
         '''Plot the rescaled ISI dependence.
 
         Should be independent if the transformation to unit rate Poisson
@@ -135,6 +144,10 @@ class TimeRescaling():
         ----------
         ax : matplotlib axis handle, optional
             If None, plots on the current axis handle.
+        scatter_kwargs : None or dict
+            Plotting arguments for scatter plot
+        ci_color : str
+            Confidence interval color
 
         Returns
         -------
@@ -142,7 +155,10 @@ class TimeRescaling():
 
         '''
         return plot_rescaled_ISI_autocorrelation(
-            self.rescaled_ISI_autocorrelation(), ax=ax)
+            self.rescaled_ISI_autocorrelation(),
+            ax=ax,
+            scatter_kwargs=scatter_kwargs,
+            ci_color=ci_color)
 
 
 def _uniform_cdf_values(n_spikes):
@@ -255,6 +271,12 @@ def uniform_rescaled_ISIs(conditional_intensity, is_spike,
            Computation 15, 2565-2576.
 
     '''
+    # if adjust_for_short_trials:
+    #     integrated_conditional_intensity = integrate.trapezoid(
+    #         conditional_intensity)
+    # else:
+    #     integrated_conditional_intensity = integrate.simpson(
+    #         conditional_intensity)
     integrated_conditional_intensity = np.cumsum(conditional_intensity)
     rescaled_ISIs = _rescaled_ISIs(
         integrated_conditional_intensity, is_spike)
@@ -268,7 +290,8 @@ def uniform_rescaled_ISIs(conditional_intensity, is_spike,
     return expon.cdf(rescaled_ISIs) / max_transformed_interval
 
 
-def plot_ks(uniform_rescaled_ISIs, ax=None):
+def plot_ks(uniform_rescaled_ISIs, ax=None, scatter_kwargs=None,
+            ci_color='red'):
     n_spikes = uniform_rescaled_ISIs.size
     uniform_cdf_values = _uniform_cdf_values(n_spikes)
     uniform_rescaled_ISIs = np.sort(uniform_rescaled_ISIs)
@@ -277,11 +300,15 @@ def plot_ks(uniform_rescaled_ISIs, ax=None):
 
     if ax is None:
         ax = plt.gca()
+
+    if scatter_kwargs is None:
+        scatter_kwargs = dict()
+
     ax.plot(uniform_cdf_values, uniform_cdf_values - ci,
-            linestyle='--', color='red')
+            linestyle='--', color=ci_color)
     ax.plot(uniform_cdf_values, uniform_cdf_values + ci,
-            linestyle='--', color='red')
-    ax.scatter(uniform_rescaled_ISIs, uniform_cdf_values)
+            linestyle='--', color=ci_color)
+    ax.scatter(uniform_rescaled_ISIs, uniform_cdf_values, **scatter_kwargs)
 
     ax.set_xlabel('Empirical CDF')
     ax.set_ylabel('Expected CDF')
@@ -290,15 +317,18 @@ def plot_ks(uniform_rescaled_ISIs, ax=None):
 
 
 def plot_rescaled_ISI_autocorrelation(rescaled_ISI_autocorrelation,
-                                      ax=None):
+                                      ax=None, scatter_kwargs=None,
+                                      ci_color='red'):
     n_spikes = rescaled_ISI_autocorrelation.size // 2 + 1
     lag = np.arange(-n_spikes + 1, n_spikes)
     if ax is None:
         ax = plt.gca()
+    if scatter_kwargs is None:
+        scatter_kwargs = dict()
     ci = 1.96 / np.sqrt(n_spikes)
-    ax.scatter(lag, rescaled_ISI_autocorrelation)
-    ax.axhline(ci, linestyle='--', color='red')
-    ax.axhline(-ci, linestyle='--', color='red')
+    ax.scatter(lag, rescaled_ISI_autocorrelation, **scatter_kwargs)
+    ax.axhline(ci, linestyle='--', color=ci_color)
+    ax.axhline(-ci, linestyle='--', color=ci_color)
     ax.set_xlabel('Lag')
     ax.set_ylabel('Autocorrelation')
 
