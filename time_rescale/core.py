@@ -50,11 +50,12 @@ class TimeRescaling(object):
     '''
     def __init__(self, conditional_intensity, is_spike, trial_id=None,
                  adjust_for_short_trials=False):
-        self.conditional_intensity = conditional_intensity
+        self.conditional_intensity = np.asarray(
+            conditional_intensity).squeeze()
         if trial_id is None:
-            trial_id = np.ones_like(conditional_intensity)
-        self.trial_id = trial_id
-        self.is_spike = is_spike
+            trial_id = np.ones_like(self.conditional_intensity)
+        self.trial_id = np.asarray(trial_id).squeeze()
+        self.is_spike = np.asarray(is_spike).squeeze()
         self.adjust_for_short_trials = adjust_for_short_trials
 
     @property
