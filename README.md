@@ -37,6 +37,26 @@ from statsmodels.api import GLM, families
 def simulate_poisson_process(rate, sampling_frequency):
     return np.random.poisson(rate / sampling_frequency)
 
+def plot_model_vs_true(time, spike_train, firing_rate, conditional_intensity, sampling_frequency):
+    fig, axes = plt.subplots(2, 1, figsize=(12, 6), sharex=True, constrained_layout=True)
+
+    s, t = np.nonzero(spike_train)
+    axes[0].scatter(np.unique(time)[s], t, s=1, color='black')
+    axes[0].set_ylabel('Trials')
+    axes[0].set_title('Simulated Spikes')
+    axes[0].set_xlim((0, 1))
+
+    axes[1].plot(np.unique(time), firing_rate[:, 0],
+                 linestyle='--', color='black',
+                 linewidth=4, label='True Rate')
+    axes[1].plot(time.ravel(), conditional_intensity * sampling_frequency,
+                 linewidth=4, label='model conditional intensity')
+    axes[1].set_xlabel('Time')
+    axes[1].set_ylabel('Firing Rate (Hz)')
+    axes[1].set_title('True Rate vs. Model')
+    axes[1].set_ylim((0, 15))
+    plt.legend()
+
 n_time, n_trials = 1500, 1000
 sampling_frequency = 1500
 
@@ -53,35 +73,18 @@ trial_id = (np.arange(n_trials)[np.newaxis, :]
 # Fit a spline model to the firing rate
 design_matrix = dmatrix('bs(time, df=5)', dict(time=time.ravel()))
 fit = GLM(spike_train.ravel(), design_matrix,
-          family=families.Poisson()).fit()
-
-
-fig, axes = plt.subplots(1, 2, figsize=(12, 6))
-
-axes[0].pcolormesh(np.unique(time), np.unique(trial_id),
-                   spike_train.T, cmap='viridis')
-axes[0].set_xlabel('Time')
-axes[0].set_ylabel('Trials')
-axes[0].set_title('Simulated Spikes')
+         family=families.Poisson()).fit()
 conditional_intensity = fit.mu
 
-axes[1].plot(np.unique(time), firing_rate[:, 0],
-             linestyle='--', color='black',
-             linewidth=4, label='True Rate')
-axes[1].plot(time.ravel(), conditional_intensity * SAMPLING_FREQUENCY,
-             linewidth=4, label='model conditional intensity')
-axes[1].set_xlabel('Time')
-axes[1].set_ylabel('Firing Rate (Hz)')
-axes[1].set_title('True Rate vs. Model')
-plt.legend()
+plot_model_vs_true(time, spike_train, firing_rate, conditional_intensity, sampling_frequency)
 ```
 
-![](simulated_spikes_model.png)
+![](notebooks/simulated_spikes_model.png)
 
 #### Use time rescaling to analyze goodness of fit
 
 ```python
-from .time_rescale import TimeRescaling
+from time_rescale import TimeRescaling
 
 conditional_intensity = fit.mu
 rescaled = TimeRescaling(conditional_intensity,
@@ -93,7 +96,7 @@ rescaled.plot_ks(ax=axes[0])
 rescaled.plot_rescaled_ISI_autocorrelation(ax=axes[1])
 ```
 
-![Goodness of fit, not adjusted for short trials](time_rescaling_ks_autocorrelation.png)
+![Goodness of fit, not adjusted for short trials](notebooks/time_rescaling_ks_autocorrelation.png)
 
 #### Use time rescaling to analyze goodness of fit but adjust for short trials
 
@@ -107,7 +110,7 @@ rescaled_adjusted.plot_ks(ax=axes[0])
 rescaled_adjusted.plot_rescaled_ISI_autocorrelation(ax=axes[1])
 ```
 
-![](time_rescaling_ks_autocorrelation_adjusted.png)
+![](notebooks/time_rescaling_ks_autocorrelation_adjusted.png)
 
 #### Use a model that doesn't fit well
 ```python
@@ -115,25 +118,9 @@ constant_fit = GLM(spike_train.ravel(),
                    np.ones_like(spike_train.ravel()),
                    family=families.Poisson()).fit()
 
-fig, axes = plt.subplots(1,2, figsize=(12,6))
-
-axes[0].pcolormesh(np.unique(time), np.unique(trial_id),
-                   spike_train.T, cmap='viridis')
-axes[0].set_xlabel('Time')
-axes[0].set_ylabel('Trials')
-axes[0].set_title('Simulated Spikes')
-
 conditional_intensity = constant_fit.mu
 
-axes[1].plot(np.unique(time), firing_rate[:, 0],
-             linestyle='--', color='black',
-             linewidth=4, label='True Rate')
-axes[1].plot(time.ravel(), conditional_intensity * SAMPLING_FREQUENCY,
-             linewidth=4, label='Model Conditional Intensity')
-axes[1].set_xlabel('Time')
-axes[1].set_ylabel('Firing Rate (Hz)')
-axes[1].set_title('True Rate vs. Model')
-plt.legend()
+plot_model_vs_true(time, spike_train, firing_rate, conditional_intensity, sampling_frequency)
 ```
 
 ![](constant_model_fit.png)
@@ -144,12 +131,12 @@ bad_rescaled = TimeRescaling(constant_fit.mu,
                              trial_id.ravel(),
                              adjust_for_short_trials=True)
 fig, axes = plt.subplots(1, 2, figsize=(12, 6))
-bad_rescaled.plot_ks(ax=axes[0])
+bad_rescaled.plot_ks(ax=axes[0], scatter_kwargs=dict(s=10))
 axes[0].set_title('KS Plot')
-bad_rescaled.plot_rescaled_ISI_autocorrelation(ax=axes[1])
+bad_rescaled.plot_rescaled_ISI_autocorrelation(ax=axes[1], scatter_kwargs=dict(s=10))
 axes[1].set_title('Autocorrelation');
 ```
-![](time_rescaling_ks_autocorrelation_bad_fit.png)
+![](notebooks/time_rescaling_ks_autocorrelation_bad_fit.png)
 
 ### References ###
 1. Brown, E.N., Barbieri, R., Ventura, V., Kass, R.E., and Frank, L.M. (2002). The time-rescaling theorem and its application to neural spike train data analysis. Neural Computation 14, 325-346.
