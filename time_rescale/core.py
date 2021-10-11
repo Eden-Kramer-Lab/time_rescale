@@ -271,13 +271,8 @@ def uniform_rescaled_ISIs(conditional_intensity, is_spike,
            Computation 15, 2565-2576.
 
     '''
-    # if adjust_for_short_trials:
-    #     integrated_conditional_intensity = integrate.trapezoid(
-    #         conditional_intensity)
-    # else:
-    #     integrated_conditional_intensity = integrate.simpson(
-    #         conditional_intensity)
-    integrated_conditional_intensity = np.cumsum(conditional_intensity)
+    integrated_conditional_intensity = integrate.cumulative_trapezoid(
+        conditional_intensity, initial=0.0)
     rescaled_ISIs = _rescaled_ISIs(
         integrated_conditional_intensity, is_spike)
 
