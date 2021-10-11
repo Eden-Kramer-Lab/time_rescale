@@ -11,13 +11,13 @@ References
 
 '''
 
-import numpy as np
 import matplotlib.pyplot as plt
-from scipy.stats import norm, expon
+import numpy as np
 from scipy.signal import correlate
+from scipy.stats import expon, norm
 
 
-class TimeRescaling(object):
+class TimeRescaling():
     '''Evaluates the goodness of fit of a point process model by
     transforming the fitted model into a unit rate Poisson process [1].
 
@@ -48,6 +48,7 @@ class TimeRescaling(object):
            Computation 15, 2565-2576.
 
     '''
+
     def __init__(self, conditional_intensity, is_spike, trial_id=None,
                  adjust_for_short_trials=False):
         self.conditional_intensity = np.asarray(
