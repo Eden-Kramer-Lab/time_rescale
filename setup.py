@@ -7,7 +7,7 @@ INSTALL_REQUIRES = ['numpy', 'scipy', 'matplotlib']
 
 setup(
     name='time_rescale',
-    version='0.2.0',
+    version='0.2.1',
     description=('Tools for evaluating the goodness of fit of a point'
                  'process model via the time rescaling theorem'),
     author='Eric Denovellis',
