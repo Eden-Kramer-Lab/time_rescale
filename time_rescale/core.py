@@ -271,8 +271,13 @@ def uniform_rescaled_ISIs(conditional_intensity, is_spike,
            Computation 15, 2565-2576.
 
     '''
-    integrated_conditional_intensity = integrate.cumulative_trapezoid(
-        conditional_intensity, initial=0.0)
+    try:
+        integrated_conditional_intensity = integrate.cumulative_trapezoid(
+            conditional_intensity, initial=0.0)
+    except AttributeError:
+        # Older versions of scipy
+        integrated_conditional_intensity = integrate.cumtrapz(
+            conditional_intensity, initial=0.0)
     rescaled_ISIs = _rescaled_ISIs(
         integrated_conditional_intensity, is_spike)
 
